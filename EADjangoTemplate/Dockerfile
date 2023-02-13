@@ -36,4 +36,4 @@ RUN populate-configs -y '{location deploy params yaml}' f '{location of producti
 # TODO: Repeat above for any other Jinja2 template configs (config.yaml, etc)
 RUN python3 manage.py collectstatic --noinput --settings='{dot notation path to settings}'
 
-
+CMD ["startup.sh"]
