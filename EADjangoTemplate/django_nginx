@@ -1,0 +1,72 @@
+proxy_cache_path /var/lib/nginx/cache keys_zone=cache:10m levels=1:2 inactive=600s max_size=100m;
+proxy_cache_valid 200 1s;
+
+
+upstream django_app {
+    # server unix:///path/to/your/mysite/mysite.sock; # for a file socket
+    # server 127.0.0.1:8000; # for a web port socket (we'll use this first)
+    server /tmp/app.sock; # # for a file socket
+}
+
+server {
+    # use 'listen 80 deferred;' for Linux
+    # use 'listen 80 accept_filter=httpready;' for FreeBSD
+    listen 80;
+    client_max_body_size 1G;
+
+    server_name {{ nginx_settings['host_name'] }};
+    charset     utf-8;
+
+    # Django media
+    # location /media  {
+    #    alias /path/to/your/mysite/media;  # your Django project's media files - amend as required
+    # }
+
+    # location /static {
+    #     alias /path/to/your/mysite/static; # your Django project's static files - amend as required
+    # }
+
+    # Finally, send all non-media requests to the Django server.
+    location / {
+        proxy_cache cache;
+        uwsgi_pass  django_app;
+        include     /etc/nginx/uwsgi_params; # the uwsgi_params file you installed
+
+        uwsgi_read_timeout 360;
+        uwsgi_send_timeout 360;
+        uwsgi_connect_timeout 360;
+    }
+
+    location ~* \.php$ {
+        deny all;
+        return 444;
+    }
+    rewrite ^/report/(.*)$ $scheme://{{ pdf_host }}/$1 permanent;
+
+}
+server {
+    listen 80;
+    client_max_body_size 1G;
+
+    server_name {{ pdf_host }};
+    charset     utf-8;
+
+    location ~* /api(.*)$ {
+        deny all;
+        return 444;
+    }
+
+    # Finally, send all non-media requests to the Django server.
+    location / {
+        proxy_cache cache;
+        uwsgi_pass  django_app;
+        include     /etc/nginx/uwsgi_params; # the uwsgi_params file you installed
+        proxy_buffers              128 4k;
+    }
+
+    location ~* \.php$ {
+        deny all;
+        return 444;
+    }
+}
+

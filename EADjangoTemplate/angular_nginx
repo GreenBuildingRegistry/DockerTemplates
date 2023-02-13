@@ -1,0 +1,38 @@
+proxy_cache_path /var/lib/nginx/cache-fe keys_zone=cache-fe:10m levels=1:2 inactive=600s max_size=100m;proxy_cache_path /var/lib/nginx/cache levels=1:2 keys_zone=backcache:8m max_size=50m;
+proxy_cache_key "$scheme$request_method$host$request_uri$is_args$args";
+proxy_cache_valid 200 30s;
+
+sub_filter_once off;
+sub_filter_types *;
+sub_filter random-csp-nonce $request_id;
+
+
+server {
+
+    server_name  {{ nginx_settings['host_name'] }};
+    keepalive_timeout 5;
+    root {{ www_path }};
+
+    location /  {
+        proxy_cache cache-fe;
+
+        if (-f {{ www_path }}/maintenance_on.html) {
+            return 503;
+        }
+        try_files $uri $uri/  /index.html;
+
+    }
+
+    location ~* \.php$ {
+        deny all;
+        return 444;
+    }
+
+    # Error pages.
+    error_page 503 /maintenance_on.html;
+    location = /maintenance_on.html {
+        root {{ www_path }};
+    }
+
+}
+
