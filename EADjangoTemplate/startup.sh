@@ -11,8 +11,7 @@ python3 manage.py rqworker high default low
 
 # Restart NGINX
 /usr/sbin/start-stop-daemon --quiet --stop --retry QUIT/5 --pidfile /run/nginx.pid
-# TODO: see certbot question in Dockerfile and command in EANginxUwsgiBase/Dockerfile
 /usr/sbin/nginx -c /etc/nginx/nginx.conf -g 'daemon on; master_process on;'
 
 # Restart uWSGI
-/usr/local/bin/uwsgi --ini path_to_uwsgi.ini
+/usr/local/bin/uwsgi --ini /etc/uwsgi/emperor.ini

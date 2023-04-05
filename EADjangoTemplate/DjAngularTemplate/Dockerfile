@@ -1,7 +1,21 @@
-# The files in this directory should be copied to the app root
+# The file, along with the relevant files in the parent directory should be copied to the app root
 # and edited with any non-secret values as appropriate
 # and/or the command for populate-configs added to appropriately update templates
 # This template assumes rqworker via Redis and SSMTP for outgoing emails
+
+FROM node:16 as build-env
+WORKDIR /app
+RUN apk add --update npm
+
+COPY ./frontend ./
+
+# TODO: I will figure out how to deal with it as ENV variables at a later date
+COPY '{config file}'.yaml /tmp
+
+RUN npm restore
+RUN ng build vendors # && all other projects libraries
+RUN populate-configs -y '{location deploy params yaml}' -f '{path to environment.prod.ts}'
+RUN ng build app-gui --production
 
 
 FROM ea-redis-smtp-base
@@ -38,6 +52,11 @@ RUN populate-configs -y '{location deploy params yaml}' f '{location of producti
 # TODO: Repeat above for any other Jinja2 template configs (config.yaml, etc)
 RUN python3 manage.py collectstatic --noinput --settings='{dot notation path to settings}'
 
-RUN rm /tmp/'{config file}'.yaml
+WORKDIR /var/www/'{app name}'
+COPY --from=build-env /app/dist/'{Angular app name}' ./gui
+
+RUN rm /tmp/'{config file'.yaml
 USER www-data
 CMD ["startup.sh"]
+
+
