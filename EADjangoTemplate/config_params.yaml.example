@@ -12,7 +12,7 @@ production:
   url: *production-domain
   nginx_settings:
     host_name: *production-host_name
-    nginx_conf: freddiemac
+    nginx_conf: angular_nginx
     upstream: *instance
   www_path: *base_dir
   frontend:
@@ -24,7 +24,7 @@ sandbox:
   url: *sandbox-domain
   nginx_settings:
     host_name: *sandbox-host_name
-    nginx_conf: freddiemac
+    nginx_conf: angular_nginx
     upstream: *sandbox-instance
   www_path: *base_dir
   frontend:
