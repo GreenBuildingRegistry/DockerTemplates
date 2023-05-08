@@ -45,6 +45,5 @@ EXPOSE 80
 # SSH port
 EXPOSE 3232
 
-# TODO: Can't get supervisor to run and launch all processes correctly when setting USER
-#USER www-data
+USER www-data
 CMD ["{full path to}/startup.sh"]

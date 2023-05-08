@@ -10,7 +10,8 @@ RUN apt-get update \
 
 # NGINX
 COPY nginx.conf /etc/nginx
-RUN chmod 644 /etc/nginx/nginx.conf && chown www-data:www-data /var/lib/nginx
-RUN pip install uwsgi populate-configs==0.0.5 --no-cache-dir \
+RUN chmod 644 /etc/nginx/nginx.conf && chown www-data:www-data /var/lib/nginx \
+    && mkdir /var/nginx && chown www-data:www-data /var/nginx \
+    && pip install uwsgi populate-configs==0.0.5 --no-cache-dir \
     && touch /var/log/uwsgi.log && chmod 664 /var/log/uwsgi.log && chown www-data:www-data /var/log/uwsgi.log \
     && touch /var/www/touch-reload && chmod 664 /var/www/touch-reload && chown www-data:www-data /var/www/touch-reload
