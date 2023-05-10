@@ -60,7 +60,7 @@ if (-not $noDeploy)
 --containers @"
     $CONTAINER_JSON
 "@ `
---public-endpoint "containerName=`"$ENDPOINT_NAME`",containerPort=80,healthCheck={healthyThreshold=2,unhealthyThreshold=2,timeoutSeconds=2,intervalSeconds=5,path=`"/`",successCodes=`"200-499`"}"
+--public-endpoint "containerName=`"$ENDPOINT_NAME`",containerPort=5000,healthCheck={healthyThreshold=2,unhealthyThreshold=2,timeoutSeconds=2,intervalSeconds=5,path=`"/`",successCodes=`"200-499`"}"
 
 }
 else

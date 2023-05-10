@@ -8,6 +8,7 @@ sub_filter random-csp-nonce $request_id;
 
 
 server {
+    listen 5000;
 
     server_name  {% for host in nginx_settings["host_name"] %}{{host}} {% endfor %};
     keepalive_timeout 5;

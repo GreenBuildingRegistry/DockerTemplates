@@ -2,7 +2,7 @@
 # and edited with any non-secret values as appropriate
 # and/or the command for populate-configs added to appropriately update templates
 # This template assumes rqworker via Redis and SSMTP for outgoing emails;
-# Change line 25 to ea-base, remove line 46 and/or 47, and edit the supervisor conf, if these services are not needed.
+# Change line 25 to ea-base, remove line 45 and/or 46, and edit the supervisor conf, if these services are not needed.
 ARG APP_ENV
 
 FROM node:16 as build-env
@@ -27,7 +27,9 @@ ARG APP_ENV
 WORKDIR /var/www/'{app path}'
 
 # TODO: Any additional apt installs, such as those needed for GEODjango/PostGIS
-# RUN apt-get update && apt-get install -y <apt packages> && apt-get clean -y && rm -rf /var/lib/apt/lists/* /tmp/library-scripts
+#RUN apt-get update && apt-get -y upgrade libmagic-dev \
+#    && apt-get clean -y && rm -rf /var/lib/apt/lists/* /tmp/library-scripts \
+#    && usermod -a -G redis www-data
 
 COPY docker ./
 
@@ -55,7 +57,7 @@ WORKDIR /var/www/'{app name}'
 COPY --from=build-env /app/dist/'{Angular app name}' ./gui
 
 # HTML port
-EXPOSE 80
+EXPOSE 5000
 # SSH port
 EXPOSE 3232
 

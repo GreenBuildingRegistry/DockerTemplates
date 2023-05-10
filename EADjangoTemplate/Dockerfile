@@ -15,12 +15,7 @@ WORKDIR /var/www/'{app_path}'
 # RUN apt-get update && apt-get install -y <apt packages> && apt-get clean -y && rm -rf /var/lib/apt/lists/* /tmp/library-scripts
 
 COPY docker ./
-RUN mv '{app nginx conf}'/etc/nginx/sites-available \
-    && chmod 644 /etc/nginx/sites-available/'{app nginx conf}' \
-    && ln -s /etc/nginx/sites-available/'{app nginx conf}' /etc/nginx/sites-enabled/'{app nginx conf}' \
-    && mv emperor.ini /etc/uwsgi/emperor.ini \
-    && mv vassal.ini /etc/uwsgi/vassals \
-    && chmod 644 /etc/uwsgi/vassals/vassal.ini
+
 RUN mkdir -p /etc/uwsgi/vassals && mv '{app nginx conf}' /etc/nginx/sites-available \
     && chmod 644 /etc/nginx/sites-available/'{app nginx conf}' \
     && ln -s /etc/nginx/sites-available/'{app nginx conf}' /etc/nginx/sites-enabled/'{app nginx conf}' \
@@ -29,6 +24,7 @@ RUN mkdir -p /etc/uwsgi/vassals && mv '{app nginx conf}' /etc/nginx/sites-availa
     && chmod 644 /etc/uwsgi/vassals/vassal.ini \
     && mv supervisor.conf /etc/supervisor/conf.d/ \
     && chmod 644 /etc/supervisor/conf.d/supervisor.conf \
+    && chown www-data /var/www/'{app path}' \
     && populate-configs -y '{full path to config file}'.yaml -f /etc/redis/redis.conf -s $APP_ENV \
     && populate-configs -y '{full path to config file}'.yaml -f /etc/ssmtp/ssmtp.conf -s $APP_ENV \
     && populate-configs -y '{full path to config file}'.yaml -f /etc/nginx/sites-available/'{app nginx conf}' -s $APP_ENV \
@@ -41,7 +37,7 @@ WORKDIR /var/www/'{app name and/or backend path}'
 RUN pip install --no-cache-dir -r '{path to requirements file}'
 
 # HTML port
-EXPOSE 80
+EXPOSE 5000
 # SSH port
 EXPOSE 3232
 
