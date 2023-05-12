@@ -4,10 +4,10 @@
 # The files in this directory should be copied to the app root
 # and edited with any non-secret values as appropriate
 # and/or the command for populate-configs added to appropriately update templates
-# This template assumes rqworker via Redis and SSMTP for outgoing emails.
-# Change line 7 to ea-base, remove line 29 and/or 30, and edit the supervisor conf, if these services are not needed.
+# This template assumes rqworker with Redis running on an separate container and SSMTP for outgoing emails.
+# Remove lines 28 to 30 as appropriate, and edit the supervisor conf, if these services are not needed.
 
-FROM ea-redis-smtp-base
+FROM ea-base
 ARG APP_ENV
 WORKDIR /var/www/'{app_path}'
 
@@ -25,7 +25,8 @@ RUN mkdir -p /etc/uwsgi/vassals && mv '{app nginx conf}' /etc/nginx/sites-availa
     && mv supervisor.conf /etc/supervisor/conf.d/ \
     && chmod 644 /etc/supervisor/conf.d/supervisor.conf \
     && chown www-data /var/www/'{app path}' \
-    && populate-configs -y '{full path to config file}'.yaml -f /etc/redis/redis.conf -s $APP_ENV \
+    && mv /tmp/ssmtp.conf /etc/ssmtp && chmod 640 /etc/ssmtp/ssmtp.conf \
+    && mkdir /var/log/rq && chown www-data:www-data /var/log/rq \
     && populate-configs -y '{full path to config file}'.yaml -f /etc/ssmtp/ssmtp.conf -s $APP_ENV \
     && populate-configs -y '{full path to config file}'.yaml -f /etc/nginx/sites-available/'{app nginx conf}' -s $APP_ENV \
     && rm '{full path to config file}'.yaml
