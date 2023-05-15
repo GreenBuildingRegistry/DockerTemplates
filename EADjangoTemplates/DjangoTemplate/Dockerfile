@@ -33,8 +33,8 @@ RUN mkdir -p /etc/uwsgi/vassals && mv '{app nginx conf}' /etc/nginx/sites-availa
 
 
 # APP
-COPY '{backend app path}' ./backend
-WORKDIR /var/www/'{app name and/or backend path}'
+COPY '{backend app path}' ./
+WORKDIR /var/www/'{app path}'
 RUN pip install --no-cache-dir -r '{path to requirements file}'
 
 # HTML port

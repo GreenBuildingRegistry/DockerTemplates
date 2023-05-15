@@ -36,3 +36,6 @@ RUN chmod 644 /etc/nginx/nginx.conf && chown www-data:www-data /var/lib/nginx \
 
 WORKDIR /var/www/'{app name}'
 COPY --from=build-env /app/dist/'{Angular app name}' ./gui
+EXPOSE 5000
+USER www-data
+CMD ["{full path to}/startup.sh"]
