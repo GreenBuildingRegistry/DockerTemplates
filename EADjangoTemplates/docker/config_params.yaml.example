@@ -31,7 +31,6 @@ sandbox:
     baseBackendUrl: 'https://sandbox.example.com/'
 
 defaults:
-  redis_password: "{{redis password}}"
   suffix: True
   mail_server: &mail_server '127.0.0.1'
 

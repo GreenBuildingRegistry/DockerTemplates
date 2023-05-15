@@ -1,11 +1,12 @@
 # This template is for a Django only release.
 #   (ie API running on a separate server from the front end, or simple Django templated web-app.
-#    If the later, command to RUN collect static should be added to line 41.)
+#    If the later, command to RUN collect static should be added to the startup.sh.)
 # The files in this directory should be copied to the app root
 # and edited with any non-secret values as appropriate
 # and/or the command for populate-configs added to appropriately update templates
 # This template assumes rqworker with Redis running on an separate container and SSMTP for outgoing emails.
-# Remove lines 28 to 30 as appropriate, and edit the supervisor conf, if these services are not needed.
+# Remove lines 29 to 31 as appropriate, and edit the supervisor conf, if these services are not needed.
+# NOTE: For reasons I have yet to discover, a copy of Django's wsgi.py must exist in the same directory as manage.py
 
 FROM ea-base
 ARG APP_ENV

@@ -2,7 +2,9 @@
 # and edited with any non-secret values as appropriate
 # and/or the command for populate-configs added to appropriately update templates
 # This template assumes rqworker with Redis running on an separate container and SSMTP for outgoing emails.
-# Remove lines 44 to 46 as appropriate, and edit the supervisor conf, if these services are not needed.
+# Remove lines 46 to 48 as appropriate, and edit the supervisor conf, if these services are not needed.
+# NOTE: For reasons I have yet to discover, a copy of Django's wsgi.py must exist in the same directory as manage.py
+
 ARG APP_ENV
 
 FROM node:16 as build-env
