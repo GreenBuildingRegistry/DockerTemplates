@@ -1,4 +1,4 @@
 cd EANginxUwsgiBase
 docker build -t  ea-base .
-cd ../EARedisSmtpBase
-docker build -t ea-redis-smtp-base .
+cd ../EASSHBase
+docker build -t ea-ssh-base .

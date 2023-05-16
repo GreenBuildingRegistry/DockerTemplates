@@ -1,8 +1,8 @@
 ## Official EA docker templates
 
 * `ea-base` => EANginxUwsgiBase
-* `ea-redis-smtp-base` => EARedisSmtpBase
-* EADjangoTemplate contains an example of how to run Django and Angular templates that we use for apps.
+* `ea-ssh-base` => EASSHBase
+* EADjangoTemplates contains example Dockerfiles for how to run Django and Angular templates, independently and together, that we use for apps.
 
 To build them:
 1. Install PowerShell
