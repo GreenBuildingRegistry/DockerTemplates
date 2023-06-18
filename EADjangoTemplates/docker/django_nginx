@@ -9,12 +9,10 @@ upstream django_app {
 }
 
 server {
-    # use 'listen 80 deferred;' for Linux
-    # use 'listen 80 accept_filter=httpready;' for FreeBSD
-    listen 80;
+    listen 5000;
     client_max_body_size 1G;
 
-    server_name {{ nginx_settings['host_name'] }};
+    server_name {% for host in nginx_settings["host_name"] %}{{host}} {% endfor %};
     charset     utf-8;
 
     # Django media

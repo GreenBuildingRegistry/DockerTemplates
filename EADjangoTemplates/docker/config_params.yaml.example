@@ -1,0 +1,53 @@
+# Assumes all secrets can be handled by ENV variables
+
+INSTANCE_NAME: &instance database_name
+SANDBOX_INSTANCE_NAME: &sandbox-instance sandbox_name
+PRODUCTION_DOMAIN: &production-domain 'example.com'
+SANDBOX_DOMAIN: &sandbox-domain 'sandbox.example.com'
+APP_PATH: &base_dir '/var/www/{{app_name}}'
+
+production:
+  host_name: &production-host_name
+   - *production-domain
+  url: *production-domain
+  nginx_settings:
+    host_name: *production-host_name
+    nginx_conf: angular_nginx
+    upstream: *instance
+  www_path: *base_dir
+  frontend:
+    baseBackendUrl: 'https://example.com/'
+
+sandbox:
+  host_name: &sandbox-host_name
+   - *sandbox-domain
+  url: *sandbox-domain
+  nginx_settings:
+    host_name: *sandbox-host_name
+    nginx_conf: angular_nginx
+    upstream: *sandbox-instance
+  www_path: *base_dir
+  frontend:
+    baseBackendUrl: 'https://sandbox.example.com/'
+
+defaults:
+  suffix: True
+  mail_server: &mail_server '127.0.0.1'
+
+  nginx_settings:
+    server: '127.0.0.1'
+    port: 8000
+    app_name: *instance
+
+  db_settings:  # This is just a reminder that the PostgreSQL DB needs these extensions
+    extensions:
+      - citext
+      - pgcrypto
+
+  mail_settings:
+    mail_host: *mail_server
+    email_host: 'smtp.gmail.com'
+    email_port: 587
+    email_user: 'noreply@greenbuildingregistry.com'
+    email_domain: 'greenbuildingregistry.com'
+
