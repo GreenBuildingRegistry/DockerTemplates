@@ -9,16 +9,17 @@ ARG APP_ENV
 FROM node:16 as build-env
 WORKDIR /app
 RUN apt-get update && apt-get -y upgrade npm python3-dev python3-pip \
-        && pip3 install populate-configs --no-cache-dir
+    && pip3 install populate-configs --no-cache-dir && pip3 install --ignore-installed PyYAML \
+    && npm install -g @angular/cli@'{Desired Angular version}'
 
 COPY ./frontend ./
 
 # TODO: Watch out for any secrets that should not be committed to the repo via the .yaml file
 COPY '{config file}'.yaml ./
 
-RUN npm install -g @angular/cli@'{Desired Angular version}' && npm install \
+RUN npm install \
     && ng build vendors  \
-    # && all other projects libraries
+    # && all other projects libraries or build script
     && populate-configs -y '{full path to config file}' -f '{path to environment.prod.ts}' -s $APP_ENV \
     && ng build app-gui --configuration  production
 

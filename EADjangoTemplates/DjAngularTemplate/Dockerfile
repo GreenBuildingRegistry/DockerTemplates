@@ -9,17 +9,19 @@ ARG APP_ENV
 
 FROM node:16 as build-env
 WORKDIR /app
+# as of 2023-08-05 PyYAML has to be pip install separately because it does not like the --no-cache-dir flag
 RUN apt-get update && apt-get -y upgrade npm python3-dev python3-pip \
-        && pip3 install populate-configs --no-cache-dir
+    && pip3 install populate-configs --no-cache-dir && pip3 install --ignore-installed PyYAML \
+    && npm install -g @angular/cli@'{Desired Angular version}'
 
 COPY ./frontend ./
 
 # TODO: Watch out for any secrets that should not be committed to the repo via the .yaml file
 COPY '{config file}'.yaml ./
 
-RUN npm install -g @angular/cli@'{Desired Angular version}' && npm install \
+RUN npm install \
     && ng build vendors  \
-    # && all other projects libraries
+    # && all other projects libraries  or build script
     && populate-configs -y '{full path to config file}' -f '{path to environment.prod.ts}' -s $APP_ENV \
     && ng build app-gui --configuration  production
 
@@ -30,7 +32,7 @@ WORKDIR /var/www/'{app path}'
 
 # TODO: Any additional apt installs, such as those needed for GEODjango/PostGIS
 #RUN apt-get update && apt-get -y upgrade libmagic-dev \
-#    && apt-get clean -y && rm -rf /var/lib/apt/lists/* /tmp/library-scripts \
+#    && apt-get clean -y && rm -rf /var/lib/apt/lists/* /tmp/library-scripts
 
 COPY docker ./
 
@@ -43,7 +45,7 @@ RUN mkdir -p /etc/uwsgi/vassals && mv '{app nginx conf}' /etc/nginx/sites-availa
     && mv supervisor.conf /etc/supervisor/conf.d/ \
     && chmod 644 /etc/supervisor/conf.d/supervisor.conf \
     && chown www-data /var/www/'{app path}' \
-    && mv /tmp/ssmtp.conf /etc/ssmtp && chmod 640 /etc/ssmtp/ssmtp.conf \
+    && mv ssmtp.conf /etc/ssmtp && chmod 640 /etc/ssmtp/ssmtp.conf \
     && mkdir /var/log/rq && chown www-data:www-data /var/log/rq \
     && populate-configs -y '{full path to config file}'.yaml -f /etc/ssmtp/ssmtp.conf -s $APP_ENV \
     && populate-configs -y '{full path to config file}'.yaml -f /etc/nginx/sites-available/'{app nginx conf}' -s $APP_ENV \

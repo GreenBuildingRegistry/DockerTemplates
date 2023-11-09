@@ -5,7 +5,7 @@ proxy_cache_valid 200 1s;
 upstream django_app {
     # server unix:///path/to/your/mysite/mysite.sock; # for a file socket
     # server 127.0.0.1:8000; # for a web port socket (we'll use this first)
-    server /tmp/app.sock; # # for a file socket
+    server unix:/var/tmp/{{appname}}.sock; # # for a file socket
 }
 
 server {
@@ -39,32 +39,6 @@ server {
         deny all;
         return 444;
     }
-    rewrite ^/report/(.*)$ $scheme://{{ pdf_host }}/$1 permanent;
 
-}
-server {
-    listen 80;
-    client_max_body_size 1G;
-
-    server_name {{ pdf_host }};
-    charset     utf-8;
-
-    location ~* /api(.*)$ {
-        deny all;
-        return 444;
-    }
-
-    # Finally, send all non-media requests to the Django server.
-    location / {
-        proxy_cache cache;
-        uwsgi_pass  django_app;
-        include     /etc/nginx/uwsgi_params; # the uwsgi_params file you installed
-        proxy_buffers              128 4k;
-    }
-
-    location ~* \.php$ {
-        deny all;
-        return 444;
-    }
 }
 
