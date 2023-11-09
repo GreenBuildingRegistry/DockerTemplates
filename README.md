@@ -1,7 +1,7 @@
 ## Official EA docker templates
 
-* `ea-base` => EANginxUwsgiBase
-* `ea-ssh-base` => EASSHBase
+* `earthadvantage/py-base` (formerly `ea-base`) => EANginxUwsgiBase
+* `earthadvantage/py-ssh-base` (formerly `ea-ssh-base`) => EASSHBase
 * EADjangoTemplates contains example Dockerfiles for how to run Django and Angular templates, independently and together, that we use for apps.
 
 To build them:
