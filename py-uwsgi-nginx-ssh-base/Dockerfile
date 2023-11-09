@@ -1,4 +1,4 @@
-FROM ea-base
+FROM earthadvantage/py-uwsgi-nginx-base
 
 RUN apt-get update && apt-get install -y openssh-server \
     && apt-get clean -y && rm -rf /var/lib/apt/lists/* /tmp/library-scripts
