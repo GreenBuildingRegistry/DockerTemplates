@@ -3,7 +3,7 @@
 ### Contents:
 * `earthadvantage/py-uwsgi-nginx-base` (formerly `EANginxUwsgiBase`)
 * `earthadvantage/py-uwsgi-nginx-ssh-base` (formerly `EASSHBase`)
-* These are automatically built and pushed to dockerhub when merged into the dev branch.
+* These are automatically built and pushed to dockerhub when a new release is made.
 * Templates contains example Dockerfiles for how to run Django and Angular templates, independently and together, that we use for apps.
 
 To build them locally (although you shouldn't do that):
